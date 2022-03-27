@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Supplier extends Model
+{
+    use HasFactory;
+    protected $table = 'suppliers';
+    protected $primaryKey = 'id';
+    protected $fillable = ['id', 'companyname', 'contactname', 'city', 'country', 'phone','fax'];
+    public function products()
+    {
+        return $this->hasMany('App\Models\Product'::class);
+    }
+}
