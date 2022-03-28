@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Supplier;
 use Illuminate\Database\QueryException;
 
 class ProductController extends Controller
@@ -16,7 +17,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->get();
+        $products = Product::latest()->with('suppliers')->get();
         return response()->json(array('response' => !is_null($products), 'data' => $products));
     }
 
@@ -38,6 +39,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'productname' => 'required|string',
             'supplier_id' => 'required|numeric',
@@ -126,5 +128,10 @@ class ProductController extends Controller
             return response()->json(array('response' => !is_null($product), 'data' => $product));
         $save = $product->delete();
         return response()->json(array('response' => $save, 'data' => $product));
+    }
+
+    public function getAllSuppliers(){
+        $suppliers = Supplier::latest()->get();
+        return response()->json(array('response' => !is_null($suppliers), 'data' => $suppliers));
     }
 }

@@ -14,7 +14,7 @@ class Product extends Model
 
     public function suppliers()
     {
-        return $this->belongsTo('App\Models\Supplier'::class);
+        return $this->belongsTo('App\Models\Supplier'::class, 'supplier_id');
     }
     public function orders()
     {

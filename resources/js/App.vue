@@ -1,5 +1,5 @@
 <template>
-  <div id="p">
+  <div>
     <b-navbar toggleable="lg" type="dark" variant="dark">
       <b-navbar-brand href="#">sawaftech</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -9,20 +9,20 @@
             ><router-link to="/" class="link">Home</router-link>
           </b-nav-item>
           <b-nav-item href="#">
-            <router-link to="/about" class="link">About</router-link>
+            <router-link to="/product" class="link">List Products</router-link>
           </b-nav-item>
+
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    <transition name="slide" mode="out-in">
     <router-view />
+    </transition>
   </div>
 </template>
 <style >
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 
@@ -48,4 +48,12 @@ a.router-link-exact-active {
 .link:hover {
   color: #42b983;
 }
+.slide-enter-active,.slide-leave-active{
+transition: opacity 0.5s,transform 0.5s;
+}
+.slide-enter,.slide-leave-to{
+    opacity: 0;
+    transform: translateX(-20%);
+}
 </style>
+

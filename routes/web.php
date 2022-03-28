@@ -16,22 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/test', function () {
-    $data = Product::latest()->with('orders', 'suppliers')->get();
+Route::get('/{any?}', [
+    function () {
+        return view('welcome');
+    }
+])->where('any', '.*');
 
-     return response()
-        ->json($data);
-    dd($data);
-});
-
-    /* Product Routes */
-    $model_name = 'product';
-    $controller_name = 'App\Http\Controllers\ProductController';
-    Route::get("$model_name/", '' . $controller_name . '@index');
-    Route::post("$model_name/store", '' . $controller_name . '@store');
-    Route::post("$model_name/update", '' . $controller_name . '@update');
-    Route::post("$model_name/destroy/{id}", '' . $controller_name . '@destroy');
-    Route::post("$model_name/edit/{id}", '' . $controller_name . '@edit');
