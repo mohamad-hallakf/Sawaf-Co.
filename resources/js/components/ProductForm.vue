@@ -3,7 +3,8 @@
     <b-form class="col-8" @submit="onSubmit">
       <b-row>
         <b-row>
-          <h4 class="text-secondary">Contact Details</h4>
+          <h4 v-if="action==`update`" class="text-secondary">Update Product</h4>
+          <h4 v-else class="text-secondary">Create Product</h4>
         </b-row>
         <b-col>
           <b-form-group label="Product Name" label-for="product-name">
@@ -66,13 +67,14 @@
         >
       </b-row>
     </b-form>
+
   </b-row>
 </template>
 
 <script>
 import axios from "axios";
-
 export default {
+
   name: "CreateCustomerModal",
   props:['action'],
   created() {

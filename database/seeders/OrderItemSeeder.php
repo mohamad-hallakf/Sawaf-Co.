@@ -21,24 +21,18 @@ class OrderItemSeeder extends Seeder
                 'order_id' => '1',
                 'unitprice' => '500',
                 'quantity' => '2',
-                'created_at' =>  Carbon::now(),
-                'updated_at' =>  Carbon::now()
             ],
             [
                 'product_id' => '3',
                 'order_id' => '2',
                 'unitprice' => '300',
                 'quantity' => '1',
-                'created_at' =>  Carbon::now(),
-                'updated_at' =>  Carbon::now()
             ],
             [
                 'product_id' => '2',
                 'order_id' => '2',
                 'unitprice' => '300',
                 'quantity' => '1',
-                'created_at' =>  Carbon::now(),
-                'updated_at' =>  Carbon::now()
             ],
         );
 

@@ -20,8 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 $model_name = 'order';
 $controller_name = 'App\Http\Controllers\OrderController';
 Route::get("$model_name/", '' . $controller_name . '@index');
+Route::get("$model_name/getAllCustomers", '' . $controller_name . '@getAllCustomers');
 Route::post("$model_name/store", '' . $controller_name . '@store');
-Route::post("$model_name/update", '' . $controller_name . '@update');
+Route::post("$model_name/update/{id}", '' . $controller_name . '@update');
 Route::post("$model_name/destroy/{id}", '' . $controller_name . '@destroy');
 Route::post("$model_name/edit/{id}", '' . $controller_name . '@edit');
 /* Product Routes */

@@ -21,7 +21,6 @@ class CreateOrderItemsTable extends Migration
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->decimal('unitprice', $precision = 12, $scale = 2);
             $table->Integer('quantity');
-            $table->timestamps();
         });
     }
 

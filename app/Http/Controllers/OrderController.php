@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use Illuminate\Database\QueryException;
 use DateTime;
+
 class OrderController extends Controller
 {
     /**
@@ -16,7 +18,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::latest()->get();
+        $orders = Order::latest()->with('customers')->get();
+
         return response()->json(array('response' => !is_null($orders), 'data' => $orders));
     }
 
@@ -38,22 +41,31 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+
+        $validator = Validator::make($request->order, [
             'ordernumber' => 'required|numeric',
             'orderdate' => 'required|date',
-            'totalamount' => 'required|numeric|min:0',
             'customer_id' => 'required|numeric',
         ]);
         if ($validator->fails()) {
             return response()->json(array('response' => false, 'errors' => $validator->errors()));
         }
+        $productid = $request->productid;
+        $price = $request->price;
+        $quantity = $request->quantity;
+        $totalAmount = 0;
+        for ($i = 0; $i < sizeOf($productid); $i++)
+            $totalAmount = $totalAmount + (intval($price[$i]) * intval($quantity[$i]));
         $order = new Order;
-        $order->ordernumber = $request->ordernumber;
-        $order->orderdate = new DateTime($request->orderdate);
-        $order->customer_id = $request->customer_id;
-        $order->totalamount = $request->totalamount;
+        $order->ordernumber = $request->order['ordernumber'];
+        $date = new DateTime($request->order['orderdate']);
+        $order->orderdate = $date->format('Y-m-d');
+        $order->customer_id = $request->order['customer_id'];
+        $order->totalamount = $totalAmount;
         try {
             $save = $order->save();
+            for ($i = 0; $i < sizeOf($productid); $i++)
+                $order->items()->attach($productid[$i], ['unitprice' => intval($price[$i]), 'quantity' => intval($quantity[$i])]);
         } catch (QueryException $e) {
             return response()->json(array('response' => false, 'errors' => $e->getMessage()));
         };
@@ -80,7 +92,7 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        $order = Order::find($id);
+        $order = Order::with('items')->find($id);
         return response()->json(array('response' => !is_null($order), 'data' => $order));
     }
 
@@ -94,22 +106,42 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->order, [
             'ordernumber' => 'required|numeric',
             'orderdate' => 'required|date',
-            'totalamount' => 'required|numeric|min:0',
             'customer_id' => 'required|numeric',
         ]);
         if ($validator->fails()) {
             return response()->json(array('response' => false, 'errors' => $validator->errors()));
         }
-        $order = Order::find($id);
-        $order->ordernumber = $request->ordernumber;
-        $order->orderdate = new DateTime($request->orderdate);
-        $order->customer_id = $request->customer_id;
-        $order->totalamount = $request->totalamount;
+        $productid = $request->productid;
+        $price = $request->price;
+        $quantity = $request->quantity;
+        $totalAmount = 0;
+        for ($i = 0; $i < sizeOf($productid); $i++)
+            $totalAmount = $totalAmount + (intval($price[$i]) * intval($quantity[$i]));
+        // get the old items in the order
+        $order = Order::with('items')->find($id);
+        $orderItem = $order->items;
+        $oldItems = array();
+        foreach ($orderItem as $item)
+            array_push($oldItems, $item->id);
+        $order->ordernumber = $request->order['ordernumber'];
+        $date = new DateTime($request->order['orderdate']);
+        $order->orderdate = $date->format('Y-m-d');
+        $order->customer_id = $request->order['customer_id'];
+        $order->totalamount = $totalAmount;
         try {
             $save = $order->save();
+
+            for ($i = 0; $i < sizeOf($oldItems); $i++) {
+                if (!in_array($oldItems[$i], $productid)) {
+                    $order->items()->detach($oldItems[$i]);
+                } else {
+                    $index = array_search($oldItems[$i], $productid);
+                    $order->items()->updateExistingPivot($oldItems[$i], ['unitprice' => intval($price[$index]), 'quantity' => intval($quantity[$index])]);
+                }
+            }
         } catch (QueryException $e) {
             return response()->json(array('response' => false, 'errors' => $e->getMessage()));
         };
@@ -130,5 +162,10 @@ class OrderController extends Controller
             return response()->json(array('response' => !is_null($order), 'data' => $order));
         $save = $order->delete();
         return response()->json(array('response' => $save, 'data' => $order));
+    }
+    public function getAllCustomers()
+    {
+        $customers = Customer::latest()->get();
+        return response()->json(array('response' => !is_null($customers), 'data' => $customers));
     }
 }

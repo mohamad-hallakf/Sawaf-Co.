@@ -15,9 +15,11 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
+        $date1 = new DateTime("5-7-2020");
+        $date2 = new DateTime("14-8-2020");
         $orders = array(
             [
-                'orderdate' => new DateTime("5-7-2020"),
+                'orderdate' => $date1->format('Y-m-d'),
                 'ordernumber' => '5',
                 'customer_id' => '2',
                 'totalamount' => '1000',
@@ -25,7 +27,7 @@ class OrderSeeder extends Seeder
                 'updated_at' =>  Carbon::now()
             ],
             [
-                'orderdate' => new DateTime("14-8-2020"),
+                'orderdate' => $date2->format('Y-m-d'),
                 'ordernumber' => '8',
                 'customer_id' => '2',
                 'totalamount' => '600',

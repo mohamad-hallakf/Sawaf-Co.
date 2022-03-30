@@ -1,11 +1,12 @@
 <template>
   <div>
-    <b-row  align-h="center" class="mt-4">
-      <b-col   >
-        <b-button variant="danger" @click="removeCustomerFromData"
-          >Ok</b-button
+
+    <b-row align-h="center" class="mt-4">
+      <b-col>
+        <b-button variant="danger" @click="removeProductrFromData">Ok</b-button>
+        <b-button variant="info" class="text-white" @click="triggerClose"
+          >Cancel</b-button
         >
-            <b-button variant="info" class="text-white" @click="triggerClose">Cancel</b-button>
       </b-col>
     </b-row>
   </div>
@@ -15,17 +16,18 @@
 import axios from "axios";
 
 export default {
-  name: "DeleteCustomerModal",
+  name: "DeleteProductrModal",
   props: {
-    productId: Number,
+    itemId: Number,
+    itemType:String
   },
   methods: {
     triggerClose() {
       this.$emit("closeDeleteModal");
     },
-    removeCustomerFromData() {
+    removeProductrFromData() {
       axios
-        .post(`/api/product/destroy/${this.productId}`)
+        .post(`/api/${this.itemType}/destroy/${this.itemId}`)
         .then(() => {
           this.$emit("reloadDataTable");
           this.$emit("showDeleteAlert");
@@ -38,3 +40,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+header button{
+    background-color: transparent;
+    border: none;
+    font-size: 25px;
+
+}
+</style>

@@ -12,12 +12,12 @@ class Order extends Model
     protected $primaryKey = 'id';
     protected $fillable = ['id', 'orderdate', 'ordernumber', 'customer_id', 'totalamount'];
 
-    public function customer()
+    public function customers()
     {
-        return $this->belongsTo('App\Models\Customer'::class);
+        return $this->belongsTo('App\Models\Customer'::class, 'customer_id');
     }
     public function items()
     {
-        return $this->belongsToMany('App\Models\Product'::class, 'order_items');
+        return $this->belongsToMany('App\Models\Product'::class, 'order_items')->withPivot('quantity','unitprice');;
     }
 }
