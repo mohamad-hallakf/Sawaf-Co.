@@ -13,7 +13,7 @@
           >
             <option value="" disabled>-- Please select an option --</option>
 
-            <option v-for="op in avaliableItems" :key="op.id" :value="op.id">
+            <option v-for="op in options" :key="op.id" :value="op.id">
               {{ op.firstname + " " + op.lastname }}
             </option>
           </select>
@@ -21,7 +21,7 @@
       </b-row>
 
       <b-row class="mt-3">
-        <b-form-group label="Order number & Date" label-for="order-number">
+        <b-form-group label="Order number & Date *" label-for="order-number">
           <b-row>
             <b-col cols="6">
               <b-form-input
@@ -57,7 +57,7 @@
                   <b-col cols="4">
                     <select
                       @change="changeProduct(productid[ind], $event)"
-                      class="form-select"
+                      class="form-select prodSel"
                       v-model="productid[ind]"
                       required
                       :data-id="`product-` + ind"
@@ -129,6 +129,14 @@
         <h5 class="text-dark">you must add one item at least</h5>
       </template>
     </warnning-modal>
+    <warnning-modal :show="itemTwaice" @close="itemTwaice = false">
+      <template #header>
+        <h3 class="text-warning mx-auto">Warning !</h3>
+      </template>
+      <template #body>
+        <h5 class="text-dark">you can't use the same item twice</h5>
+      </template>
+    </warnning-modal>
   </b-row>
 </template>
 
@@ -181,7 +189,7 @@ export default {
   data() {
     return {
       items: [1],
-
+      itemTwaice: false,
       order: {
         ordernumber: "",
         orderdate: "",
@@ -266,9 +274,21 @@ export default {
       if (this.items.length < this.product.length) this.items.push(1);
     },
     changeProduct(id, e) {
-
+      var selects = document.getElementsByClassName("prodSel");
       let target = e.target.getAttribute("data-id").split("-");
       let index = target[1];
+      for (let i = 0; i < selects.length; i++) {
+        if (
+          selects[i].value == id &&
+          selects[i].getAttribute("data-id") != e.target.getAttribute("data-id")
+        ) {
+          this.productid[index] = "";
+
+          this.itemTwaice = true;
+          return;
+        }
+      }
+
       let price;
       this.product.forEach((element) => {
         if (element.id == id) price = element.unitprice;

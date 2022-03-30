@@ -133,21 +133,19 @@ class OrderController extends Controller
         $order->totalamount = $totalAmount;
         try {
             $save = $order->save();
-            foreach($productid as $i=>$rqitem){
-                if(in_array($rqitem, $oldItems)){
+            foreach ($productid as $i => $rqitem) {
+                if (in_array($rqitem, $oldItems)) {
                     $order->items()->updateExistingPivot($rqitem, ['unitprice' => intval($price[$i]), 'quantity' => intval($quantity[$i])]);
-                    $index = array_search($rqitem,$oldItems);
+                    $index = array_search($rqitem, $oldItems);
                     unset($oldItems[$index]);
-                }
-                else{
+                } else {
                     $order->items()->attach($rqitem, ['unitprice' => intval($price[$i]), 'quantity' => intval($quantity[$i])]);
-
                 }
             }
 
-            foreach($oldItems as $i=>$olditem){
+            foreach ($oldItems as $i => $olditem) {
 
-                    $order->items()->detach($olditem);
+                $order->items()->detach($olditem);
             }
         } catch (QueryException $e) {
             return response()->json(array('response' => false, 'errors' => $e->getMessage()));
