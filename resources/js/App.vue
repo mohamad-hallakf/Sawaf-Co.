@@ -66,5 +66,6 @@ transition: opacity 0.5s,transform 0.5s;
     float: right;
 
 }
+
 </style>
 

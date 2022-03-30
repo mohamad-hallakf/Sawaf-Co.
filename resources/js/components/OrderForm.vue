@@ -4,20 +4,20 @@
       <b-row>
         <h4 v-if="action == `update`" class="text-secondary">Update Order</h4>
         <h4 v-else class="text-secondary">Create Order</h4>
+        <b-form-group label="Choose Customer Name *" label-for="customer-id">
+          <select
+            class="form-select"
+            id="customer-id"
+            v-model="order.customer_id"
+            required
+          >
+            <option value="" disabled>-- Please select an option --</option>
 
-        <label for="customer-id" />Choose Customer Name
-        <select
-          class="form-select"
-          id="customer-id"
-          v-model="order.customer_id"
-          required
-        >
-          <option value="" disabled>-- Please select an option --</option>
-
-          <option v-for="op in options" :key="op.id" :value="op.id">
-            {{ op.firstname + " " + op.lastname }}
-          </option>
-        </select>
+            <option v-for="op in avaliableItems" :key="op.id" :value="op.id">
+              {{ op.firstname + " " + op.lastname }}
+            </option>
+          </select>
+        </b-form-group>
       </b-row>
 
       <b-row class="mt-3">
@@ -44,10 +44,7 @@
       </b-row>
 
       <b-row class="mt-3">
-        <span
-          v-if="action == `create`"
-          class="mx-auto text-center font-weight-bold h4"
-        >
+        <span class="mx-auto text-center font-weight-bold h4">
           Add Items
           <b-button @click="insert" variant="success" class="p-1 rounded">
             <b-icon icon="plus-circle" class="mt-1"></b-icon></b-button
@@ -68,7 +65,6 @@
                       <option value="" disabled selected>
                         -- Please select an item --
                       </option>
-
                       <option v-for="op in product" :key="op.id" :value="op.id">
                         {{ op.productname }}
                       </option>
@@ -79,6 +75,7 @@
                       type="number"
                       placeholder="Price"
                       required
+                      step="0.01"
                       :data-id="`price-` + ind"
                       v-model="price[ind]"
                     ></b-form-input>
@@ -164,14 +161,13 @@ export default {
         .post("/api/order/edit/" + this.$route.params.id + "")
         .then((response) => {
           let orders = response.data.data;
-          console.log(orders)
           this.order.ordernumber = orders.ordernumber;
           this.order.orderdate = orders.orderdate;
           this.order.customer_id = orders.customer_id;
           this.items = [];
           for (var i = 0; i < orders.items.length; i++) {
             this.items.push(i);
-            this.price[i] = orders.items[i].pivot.unitprice;;
+            this.price[i] = orders.items[i].pivot.unitprice;
             this.quantity[i] = orders.items[i].pivot.quantity;
             this.productid[i] = orders.items[i].id;
           }
@@ -185,6 +181,7 @@ export default {
   data() {
     return {
       items: [1],
+
       order: {
         ordernumber: "",
         orderdate: "",
@@ -193,6 +190,7 @@ export default {
       showModal: false,
       options: [],
       product: [],
+      avaliableItems: [],
       price: [],
       quantity: [],
       productid: [""],
@@ -249,7 +247,7 @@ export default {
       } else {
         setTimeout(() => {
           this.$router.push({ path: "/order" });
-        }, 9000);
+        }, 2000);
       }
     },
 
@@ -265,9 +263,10 @@ export default {
       }
     },
     insert() {
-      this.items.push(1);
+      if (this.items.length < this.product.length) this.items.push(1);
     },
     changeProduct(id, e) {
+
       let target = e.target.getAttribute("data-id").split("-");
       let index = target[1];
       let price;

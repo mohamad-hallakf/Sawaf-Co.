@@ -34,7 +34,7 @@
                     variant="outline-primary"
                     @click="goToUpdatePage(data.item.id)"
                   >
-                    Modifay</b-button
+                    Modify</b-button
                   >
                                <b-button
                     variant="outline-danger"

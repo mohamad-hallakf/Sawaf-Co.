@@ -1,5 +1,5 @@
 <template>
-  <b-row align-h="center" class="mx-auto">
+  <b-row align-h="center" class="mx-auto myform" >
     <b-form class="col-8" @submit="onSubmit">
       <b-row>
         <b-row>
@@ -7,42 +7,42 @@
           <h4 v-else class="text-secondary">Create Product</h4>
         </b-row>
         <b-col>
-          <b-form-group label="Product Name" label-for="product-name">
+          <b-form-group label="Product Name *" label-for="product-name">
             <b-form-input
               id="product-name"
               type="text"
               placeholder="Product Name"
               required
               v-model="product.productname"
-              :state="ProductNameState"
+
             ></b-form-input>
-            <b-form-invalid-feedback id="input-live-feedback">
-              Product Name is Requirde
-            </b-form-invalid-feedback>
+            <!-- <b-form-invalid-feedback id="input-live-feedback">
+              Product Name is Required
+            </b-form-invalid-feedback> -->
           </b-form-group>
         </b-col>
       </b-row>
       <b-row class="mt-3">
         <b-col>
-          <b-form-group label="Unit Price" label-for="unit-price">
+          <b-form-group label="Unit Price *" label-for="unit-price">
             <b-form-input
               id="unit-price"
               type="number"
               required
               placeholder=" "
               v-model="product.unitprice"
-              :state="unitState"
+
               requird
             ></b-form-input>
-            <b-form-invalid-feedback id="iunit-price-feedback">
-              Unir Price is Requirde
-            </b-form-invalid-feedback>
+            <!-- <b-form-invalid-feedback id="iunit-price-feedback">
+              Unir Price is Required
+            </b-form-invalid-feedback> -->
           </b-form-group>
         </b-col>
       </b-row>
       <b-row class="mt-3">
         <b-col>
-          <label for="supplier-id" />Choose Company Name
+          <label for="supplier-id" />Choose Company Name *
           <select
             class="form-select"
             id="supplier-id"
@@ -65,6 +65,7 @@
 
           >Save</b-button
         >
+
       </b-row>
     </b-form>
 
@@ -158,3 +159,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.myform{
+    height: 350px !important;
+}
+</style>
